@@ -16,6 +16,10 @@ public class PlayerManager : CharacterManager
     {
         base.Update();
 
+        // If you dont own the gameobject you cant control or edit it
+        if (!IsOwner)
+            return;
+
         playerMovementManager.HandleAllMovement();
     }
 }
