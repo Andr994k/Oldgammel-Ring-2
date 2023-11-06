@@ -19,7 +19,7 @@ public class PlayerUIManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }    
+        }
     }
 
     private void Start()
