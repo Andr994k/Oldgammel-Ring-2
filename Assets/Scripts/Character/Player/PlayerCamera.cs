@@ -12,6 +12,12 @@ public class PlayerCamera : MonoBehaviour
     [Header("Camera Settings")]
     private Vector3 cameraVelocity;
     private float CameraSmoothSpeed = 1;
+    [SerializeField] float leftAndRightRotationSpeed = 200;
+    [SerializeField] float upAndDownRotationSpeed = 200;
+    [SerializeField] float leftAndRightLookAngle;
+    [SerializeField] float upAndDownLookAngle;
+    [SerializeField] float pivotRangeMin = -45;
+    [SerializeField] float pivotRangeMax = 45;
 
 
     private void Awake()
@@ -47,7 +53,12 @@ public class PlayerCamera : MonoBehaviour
 
     }
 
-
+    private void Rotation()
+    {
+        leftAndRightLookAngle += (PlayerInputManager.instance.cameraHorizontalInput * leftAndRightRotationSpeed) * Time.deltaTime;
+        upAndDownLookAngle -= (PlayerInputManager.instance.cameraVerticalInput * upAndDownRotationSpeed) * Time.deltaTime;
+        upAndDownLookAngle = Mathf.Clamp(upAndDownLookAngle, pivotRangeMin, pivotRangeMax);
+    }
 
 
 }
