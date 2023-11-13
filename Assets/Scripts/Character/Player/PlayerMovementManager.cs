@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class PlayerMovementManager : CharacterMovementManager
 {
+    CharacterController controller;
     PlayerManager player;
     public float verticalMovement;
     public float horizontalMovement;
-    public float moveAmount;
 
     private Vector3 moveDirection;
+    private float gravity;
     private Vector3 targetRotationDirection;
     [SerializeField] float walkingSpeed = 2;
     [SerializeField] float runningSpeed = 5;
@@ -20,23 +22,40 @@ public class PlayerMovementManager : CharacterMovementManager
         base.Awake();
 
         player = GetComponent<PlayerManager>();
+        controller = GetComponent<CharacterController>();
     }
 
 
     public void HandleAllMovement()
     {
-        HandleGroundedMovement();
+        Gravity();
+        GroundedMovement();
         HandleRotation();
     }
-
 
     private void GetVerticalAndHorizontalInput()
     {
         verticalMovement = PlayerInputManager.instance.verticalInput;
         horizontalMovement = PlayerInputManager.instance.horizontalInput;
     }
+    private bool Grounded()
+    {
+        return Physics.Raycast(player.transform.position + controller.center, Vector3.down, controller.bounds.extents.y + controller.skinWidth + 0.2f);
+    }
 
-    private void HandleGroundedMovement()
+    private float Gravity()
+    {
+        if (!Grounded() == true)
+        {
+            return gravity = -9.82f;
+        }
+        else
+        {
+            return gravity = 0;
+        }
+    }
+
+    private void GroundedMovement()
     {
         GetVerticalAndHorizontalInput();
         
@@ -44,7 +63,8 @@ public class PlayerMovementManager : CharacterMovementManager
         moveDirection = PlayerCamera.instance.transform.forward * verticalMovement;
         moveDirection = moveDirection + PlayerCamera.instance.transform.right * horizontalMovement;
         moveDirection.Normalize();
-        moveDirection.y = 0;
+        moveDirection.y = gravity;
+        
 
         if (PlayerInputManager.instance.moveAmount > 0.5f)
         {
@@ -73,4 +93,5 @@ public class PlayerMovementManager : CharacterMovementManager
         Quaternion targetRotation = Quaternion.Slerp(transform.rotation, newRotation, rotationSpeed * Time.deltaTime);
         transform.rotation = targetRotation;
     }
+
 }
