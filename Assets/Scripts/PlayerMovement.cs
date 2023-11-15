@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,14 +12,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 7.5f;
     [SerializeField] private float moveSpeed;
+    [SerializeField] private bool isGrounded;
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] private InputAction move;
     [SerializeField] private InputAction jump;
     [SerializeField] private InputAction sprint;
+    [SerializeField] Vector3 moveDirection = Vector3.zero;
 
     [Header("Gravity")]
-    [SerializeField] private float jumpHeight = 200f;
-    [SerializeField] private float gravity = 9.82f;
+    [SerializeField] private float jumpHeight = 5f;
+    [SerializeField] private float gravity = -9.82f;
+    [SerializeField] Vector3 gravityDirection = Vector3.zero;
 
     [Header("Angle")]
     [SerializeField] private float targetAngle;
@@ -35,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     {
         playerControls = new PlayerControls();
     }
+
 
     private void OnEnable()
     {
@@ -65,12 +70,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isGrounded = Grounded();
+
+        if (isGrounded && gravityDirection.y < 0)
+        {
+            moveDirection.y = -2f;
+        }
+
         // Get user input
         Vector2 Direction = move.ReadValue<Vector2>();
         float Jumping = jump.ReadValue<float>();
-        float Sprinting = sprint.ReadValue<float>(); 
+        float Sprinting = sprint.ReadValue<float>();
 
-        Vector3 moveDirection = Vector3.zero;
+
+        moveDirection.x = 0f;
+        moveDirection.z = 0f;
 
         // movement
         if (Direction.magnitude >= 0.1f)
@@ -79,16 +93,26 @@ public class PlayerMovement : MonoBehaviour
             angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref TurnSmoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
             moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-            // find the moveSpeed
-            Running(Sprinting);
-
-            // Move
-            controller.Move(moveDirection.normalized * moveSpeed * Time.deltaTime);
         }
+
+        // find the moveSpeed
+        MovementSpeedChange(Sprinting);
+
+        // Move
+        controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+
+        //if (Jumping > 0 && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            gravityDirection.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+        }
+
+        gravityDirection.y += gravity * Time.deltaTime;
+
+        controller.Move(gravityDirection * Time.deltaTime);
     }
 
-    private void Running(float S)
+    private void MovementSpeedChange(float S)
     {
         if (S > 0)
         {
@@ -98,12 +122,7 @@ public class PlayerMovement : MonoBehaviour
         {
             moveSpeed = walkSpeed;
         }
-
-
-
     }
-
-
 
     // Ground check
     private bool Grounded()
