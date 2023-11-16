@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44114372, g: 0.4899102, b: 0.5699846, a: 1}
+  m_IndirectSpecularColor: {r: 0.44114345, g: 0.48991066, b: 0.5699848, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4845,7 +4845,7 @@ PrefabInstance:
       objectReference: {fileID: 2225907734823547161}
     - target: {fileID: -6679057696211889853, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: gravity
-      value: -9.82
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: -6679057696211889853, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: jump.m_Id
@@ -4861,7 +4861,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6679057696211889853, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: jumpHeight
-      value: 5
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: -6679057696211889853, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: jump.m_Name
@@ -20048,11 +20048,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9132826124627119587, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000019069953
+      value: -0.00000001906995
       objectReference: {fileID: 0}
     - target: {fileID: 9132826124627119587, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000025320432
+      value: 0.0000000025320428
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

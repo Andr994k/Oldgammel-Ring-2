@@ -102,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
         //if (Jumping > 0 && isGrounded)
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && Sprinting > 0 && isGrounded)
         {
             gravityDirection.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
         }
