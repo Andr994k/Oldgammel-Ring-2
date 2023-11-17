@@ -7,24 +7,33 @@ using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMechanics : MonoBehaviour
 {
+    [Header("Health")]
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] public float currentHealth;
     [SerializeField] public Image HealthBar;
     [SerializeField] private int flaskOfCrimsonTears;
     [SerializeField] private TextMeshProUGUI flaskOfCrimsonTearsAmount;
-    [SerializeField] private float flaskOfCrimsonTearsHealAmount = 50f;
+    [SerializeField] private float flaskOfCrimsonTearsHealAmount;
+    [SerializeField] private bool invincible;
 
+    [Header("Mana")]
     [SerializeField] private float maxMana = 100f;
     [SerializeField] private float currentMana;
 
+    [Header("Stamina")]
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float currentStamina;
-    [SerializeField] private float StaminaRunCost = 0.1f;
-    [SerializeField] private float StaminaJumpCost = 10f;
+    [SerializeField] private float StaminaRunCost;
+    [SerializeField] private float StaminaJumpCost;
+    [SerializeField] private float StaminaRollCost;
+    [SerializeField] private float StaminaRechargeRate;
+
     [SerializeField] public Image StaminaBar;
 
+    [Header("Inputs")]
     [SerializeField] private CharacterController controller;
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] private InputAction jump;
@@ -32,16 +41,17 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] private InputAction tab;
     [SerializeField] private InputAction E;
     [SerializeField] private GameObject controlsScreen;
-    
-    [SerializeField] private bool E_pressed;
+    [SerializeField] PlayerMovement playerMovement;
 
-    public PlayerMechanics instance;
+    [SerializeField] private bool E_pressed;
+    [SerializeField] private bool F_pressed;
+
 
     private void Awake()
     {
         playerControls = new PlayerControls();
         controlsScreen.SetActive(false);
-        instance = GetComponent<PlayerMechanics>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     private void OnEnable()
@@ -59,6 +69,7 @@ public class PlayerMechanics : MonoBehaviour
         E.Enable();
 
         playerControls.Player.Healing.started += i => E_pressed = true;
+        playerControls.Player.Jump.started += i => F_pressed = true;
     }
 
     private void Start()
@@ -71,6 +82,8 @@ public class PlayerMechanics : MonoBehaviour
 
     private void Update()
     {
+        invincible = playerMovement.rollInvincibility;
+
         bool isGrounded = Grounded();
 
         float Jumping = jump.ReadValue<float>();
@@ -78,21 +91,25 @@ public class PlayerMechanics : MonoBehaviour
         float showControls = tab.ReadValue<float>();
 
         // Stamina control
-        if (Sprinting > 0 && isGrounded && Jumping == 0)
+        if (Sprinting > 0 && isGrounded) // && Jumping == 0
         {
             StaminaBar.fillAmount -= StaminaRunCost * Time.deltaTime;
             currentStamina -= StaminaRunCost * 100 * Time.deltaTime;
+            if (F_pressed)
+            {
+                F_pressed = false;
+                StaminaBar.fillAmount -= StaminaJumpCost/100;
+                currentStamina -= StaminaJumpCost;
+            }
+            F_pressed = false;
         }
-        else if (Jumping > 0 && isGrounded && Sprinting > 0)
+        else if (isGrounded)
         {
-            StaminaBar.fillAmount -= StaminaJumpCost * Time.deltaTime;
-            currentStamina -= StaminaJumpCost * 100 * Time.deltaTime;
+            StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
+            currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;
         }
-        else
-        {
-            StaminaBar.fillAmount += StaminaRunCost * Time.deltaTime;
-            currentStamina += StaminaRunCost * 100 * Time.deltaTime;
-        }
+        F_pressed = false;
+
         if (StaminaBar.fillAmount < 0 | currentStamina < 0)
         {
             StaminaBar.fillAmount = 0;
@@ -143,10 +160,10 @@ public class PlayerMechanics : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.transform.tag == "Weapon")
+        if (other.transform.tag == "Weapon" && !invincible)
         {
-            currentHealth -= 0.1f * 100 * Time.deltaTime;
-            HealthBar.fillAmount -= 0.1f * Time.deltaTime;
+            currentHealth -= 0.5f * 100 * Time.deltaTime;
+            HealthBar.fillAmount -= 0.5f * Time.deltaTime;
         }
     }
 

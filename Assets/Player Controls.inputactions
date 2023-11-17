@@ -15,15 +15,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "ec65f410-587b-499d-847c-24e396cc841a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Sprint",
                     "type": "Button",
                     "id": "6b9a671e-2c07-4edb-9cf8-c4003173892f",
@@ -42,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Roll/Backstep",
+                    "name": "RollandBackstepandJump",
                     "type": "Button",
                     "id": "007b3d0f-3de1-4add-9900-50b32521cc75",
                     "expectedControlType": "Button",
@@ -118,17 +109,6 @@
                 },
                 {
                     "name": "",
-                    "id": "b346692b-f582-4677-be4b-d0e40e82d509",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "15e7a661-ee23-4dd6-ad5c-838686b90425",
                     "path": "<Keyboard>/shift",
                     "interactions": "",
@@ -156,7 +136,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Roll/Backstep",
+                    "action": "RollandBackstepandJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

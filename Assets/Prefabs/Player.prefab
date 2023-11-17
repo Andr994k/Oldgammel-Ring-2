@@ -116,10 +116,11 @@ GameObject:
   - component: {fileID: 6989065060770032081}
   - component: {fileID: 7964126330574488898}
   - component: {fileID: 2411824818372125755}
+  - component: {fileID: 1533704560370344934}
   - component: {fileID: 848356386054583244}
   - component: {fileID: 866182869619083900}
   - component: {fileID: 6254254351497997994}
-  - component: {fileID: -6679057696211889853}
+  - component: {fileID: 5645493800030373655}
   - component: {fileID: 7961294381307547290}
   m_Layer: 0
   m_Name: Player
@@ -194,6 +195,33 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!54 &1533704560370344934
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6571550606423765209}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 126
+  m_CollisionDetection: 1
 --- !u!136 &848356386054583244
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -273,7 +301,7 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &-6679057696211889853
+--- !u!114 &5645493800030373655
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -285,15 +313,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 989273b07c4ed4149b1c1bdae1458e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 5
-  runSpeed: 7.5
-  moveSpeed: 5
-  isGrounded: 0
   move:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: ce5da918-8949-494f-b568-1b4c2c7e2d4e
+    m_Id: 2a52e672-23e5-45a3-8e6e-0019cfcb7bc4
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
@@ -302,7 +326,7 @@ MonoBehaviour:
     m_Name: Jump
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 23a56d7e-7a54-4a53-a003-2bb883e5a1e2
+    m_Id: 201bd952-fe9c-4410-a23e-49e4883643d1
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
@@ -311,21 +335,42 @@ MonoBehaviour:
     m_Name: Sprint
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: b17a42e8-5d41-4b25-91af-f09b4308f7b7
+    m_Id: e9c152f3-6071-4340-a715-3938dfba7492
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  roll:
+    m_Name: Roll
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 27da6286-165f-4295-b3b8-34a1050a2a07
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  Shift_pressed: 0
+  F_pressed: 0
+  Space_pressed: 0
+  walkSpeed: 0
+  runSpeed: 0
+  moveSpeed: 0
+  rollSpeed: 0
+  rollTime: 0
+  backstepSpeed: 5
+  isGrounded: 0
   moveDirection: {x: 0, y: 0, z: 0}
-  jumpHeight: 2.5
-  gravity: -20
+  rollInvincibility: 0
+  jumpHeight: 5
+  gravity: -9.82
   gravityDirection: {x: 0, y: 0, z: 0}
   targetAngle: 0
   angle: 0
-  turnSmoothTime: 0.05
+  turnSmoothTime: 0.1
   TurnSmoothVelocity: 0
   Camera: {fileID: 0}
   controller: {fileID: 866182869619083900}
+  StaminaBar: {fileID: 0}
 --- !u!114 &7961294381307547290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,6 +383,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6e94a7a58ad5147ad9e1ba69741e16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 0
-  Mana: 0
-  Stamina: 0
+  maxHealth: 100
+  currentHealth: 0
+  HealthBar: {fileID: 0}
+  flaskOfCrimsonTears: 3
+  flaskOfCrimsonTearsAmount: {fileID: 0}
+  flaskOfCrimsonTearsHealAmount: 50
+  invincible: 0
+  maxMana: 100
+  currentMana: 0
+  maxStamina: 100
+  currentStamina: 0
+  StaminaRunCost: 0.1
+  StaminaJumpCost: 33
+  StaminaRollCost: 0
+  StaminaRechargeRate: 0.2
+  StaminaBar: {fileID: 0}
+  controller: {fileID: 866182869619083900}
+  jump:
+    m_Name: Jump
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: e0742502-2f13-4d9d-8f14-edf3d74a972e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  sprint:
+    m_Name: Sprint
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: e51ed138-1a1e-43e8-bbcf-e4df7eebc732
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  tab:
+    m_Name: Tab
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: f0a76561-a0a4-4664-9b17-d6dd2a893fdc
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  E:
+    m_Name: E
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: af7323a4-0d20-485e-bb82-3bdfc5945577
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  controlsScreen: {fileID: 0}
+  playerMovement: {fileID: 5645493800030373655}
+  E_pressed: 0
+  F_pressed: 0

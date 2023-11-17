@@ -9,19 +9,24 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float runSpeed = 7.5f;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float rollSpeed = 7.5f;
-    [SerializeField] private float backstepSpeed = 5f;
-    [SerializeField] private bool isGrounded;
+    [Header("Inputs")]
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] private InputAction move;
-    [SerializeField] private InputAction jump;
     [SerializeField] private InputAction sprint;
-    [SerializeField] Vector3 moveDirection = Vector3.zero;
+    [SerializeField] private InputAction space;
+    [SerializeField] private bool Shift_pressed;
+    [SerializeField] private bool Space_pressed;
 
+    [Header("Movement")]
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float runSpeed;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float rollSpeed;
+    [SerializeField] private float rollTime;
+    [SerializeField] private float backstepSpeed = 5f;
+    [SerializeField] private bool isGrounded;
+    [SerializeField] Vector3 moveDirection = Vector3.zero;
+    [SerializeField] public bool rollInvincibility;
 
     [Header("Gravity")]
     [SerializeField] private float jumpHeight = 5f;
@@ -42,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = new PlayerControls();
+        playerControls = GetComponent<PlayerControls>();
     }
 
 
@@ -51,18 +56,23 @@ public class PlayerMovement : MonoBehaviour
         move = playerControls.Player.Move;
         move.Enable();
 
-        jump = playerControls.Player.Jump;
-        jump.Enable();
-
         sprint = playerControls.Player.Sprint;
         sprint.Enable();
+
+        space = playerControls.Player.RollandBackstepandJump;
+        space.Enable();
+
+
+        playerControls.Player.Sprint.started += i => Shift_pressed = true;
+        playerControls.Player.RollandBackstepandJump.started += i => Space_pressed = true;
+
     }
 
     private void OnDisable()
     {
         move.Disable();
-        jump.Disable();
         sprint.Disable();
+        space.Disable();
     }
 
     // Start is called before the first frame update
@@ -84,42 +94,74 @@ public class PlayerMovement : MonoBehaviour
 
         // Get user input
         Vector2 Direction = move.ReadValue<Vector2>();
-        float Jumping = jump.ReadValue<float>();
-        float Sprinting = sprint.ReadValue<float>();
-
-
         moveDirection.x = 0f;
         moveDirection.z = 0f;
 
-        // movement
+        // Movement
         if (Direction.magnitude >= 0.1f)
         {
-            targetAngle = Mathf.Atan2(Direction.x, Direction.y) * Mathf.Rad2Deg + Camera.eulerAngles.y;
-            angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref TurnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-            moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            if (isGrounded)
+            {
+                targetAngle = Mathf.Atan2(Direction.x, Direction.y) * Mathf.Rad2Deg + Camera.eulerAngles.y;
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref TurnSmoothVelocity, turnSmoothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+                moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            }
+            else
+            {
+                moveDirection = transform.forward;
+            }
         }
 
-        // find the moveSpeed
-        MovementSpeedChange(Sprinting);
+        // Find the moveSpeed
+        MovementSpeedChange(Shift_pressed);
 
         // Move
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
-        //if (Jumping > 0 && isGrounded)
-        if (Input.GetButtonDown("Jump") && Sprinting > 0 && isGrounded && StaminaBar.fillAmount > 0.1f)
+        // Jump calculation
+        if (Space_pressed && Shift_pressed && isGrounded && StaminaBar.fillAmount > 0)
         {
+            Space_pressed = false;
             gravityDirection.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
         }
 
+        // Apply gravity
         gravityDirection.y += gravity * Time.deltaTime;
 
+        // Jump
         controller.Move(gravityDirection * Time.deltaTime);
+
+        // Roll
+        if (!Shift_pressed && Space_pressed && Direction.magnitude >= 0.1f)
+        {
+            StartCoroutine(Roll());
+        }
+
+        // Reset buttons
+        rollInvincibility = false;
+        Space_pressed = false;
+        Shift_pressed = false;
     }
 
-    private void MovementSpeedChange(float S)
+
+    // Roll function
+    IEnumerator Roll() 
+    { 
+        float startTime = Time.time;
+
+        while (Time.time < startTime + rollTime)
+        {
+            rollInvincibility = true;
+            controller.Move(moveDirection * rollSpeed * Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    // Walk or run function
+    private void MovementSpeedChange(bool Sprint)
     {
-        if (S > 0 && StaminaBar.fillAmount > 0)
+        if (Sprint && StaminaBar.fillAmount > 0)
         {
             moveSpeed = runSpeed;
         }
@@ -127,6 +169,7 @@ public class PlayerMovement : MonoBehaviour
         {
             moveSpeed = walkSpeed;
         }
+
     }
 
     // Ground check

@@ -37,15 +37,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Jump"",
-                    ""type"": ""Button"",
-                    ""id"": ""ec65f410-587b-499d-847c-24e396cc841a"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""6b9a671e-2c07-4edb-9cf8-c4003173892f"",
@@ -64,7 +55,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Roll/Backstep"",
+                    ""name"": ""RollandBackstepandJump"",
                     ""type"": ""Button"",
                     ""id"": ""007b3d0f-3de1-4add-9900-50b32521cc75"",
                     ""expectedControlType"": ""Button"",
@@ -140,17 +131,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b346692b-f582-4677-be4b-d0e40e82d509"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""15e7a661-ee23-4dd6-ad5c-838686b90425"",
                     ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
@@ -178,7 +158,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Roll/Backstep"",
+                    ""action"": ""RollandBackstepandJump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -201,10 +181,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Controls = m_Player.FindAction("Controls", throwIfNotFound: true);
-        m_Player_RollBackstep = m_Player.FindAction("Roll/Backstep", throwIfNotFound: true);
+        m_Player_RollandBackstepandJump = m_Player.FindAction("RollandBackstepandJump", throwIfNotFound: true);
         m_Player_Healing = m_Player.FindAction("Healing", throwIfNotFound: true);
     }
 
@@ -268,20 +247,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Controls;
-    private readonly InputAction m_Player_RollBackstep;
+    private readonly InputAction m_Player_RollandBackstepandJump;
     private readonly InputAction m_Player_Healing;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
         public PlayerActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Controls => m_Wrapper.m_Player_Controls;
-        public InputAction @RollBackstep => m_Wrapper.m_Player_RollBackstep;
+        public InputAction @RollandBackstepandJump => m_Wrapper.m_Player_RollandBackstepandJump;
         public InputAction @Healing => m_Wrapper.m_Player_Healing;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -295,18 +272,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
             @Controls.started += instance.OnControls;
             @Controls.performed += instance.OnControls;
             @Controls.canceled += instance.OnControls;
-            @RollBackstep.started += instance.OnRollBackstep;
-            @RollBackstep.performed += instance.OnRollBackstep;
-            @RollBackstep.canceled += instance.OnRollBackstep;
+            @RollandBackstepandJump.started += instance.OnRollandBackstepandJump;
+            @RollandBackstepandJump.performed += instance.OnRollandBackstepandJump;
+            @RollandBackstepandJump.canceled += instance.OnRollandBackstepandJump;
             @Healing.started += instance.OnHealing;
             @Healing.performed += instance.OnHealing;
             @Healing.canceled += instance.OnHealing;
@@ -317,18 +291,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
             @Controls.started -= instance.OnControls;
             @Controls.performed -= instance.OnControls;
             @Controls.canceled -= instance.OnControls;
-            @RollBackstep.started -= instance.OnRollBackstep;
-            @RollBackstep.performed -= instance.OnRollBackstep;
-            @RollBackstep.canceled -= instance.OnRollBackstep;
+            @RollandBackstepandJump.started -= instance.OnRollandBackstepandJump;
+            @RollandBackstepandJump.performed -= instance.OnRollandBackstepandJump;
+            @RollandBackstepandJump.canceled -= instance.OnRollandBackstepandJump;
             @Healing.started -= instance.OnHealing;
             @Healing.performed -= instance.OnHealing;
             @Healing.canceled -= instance.OnHealing;
@@ -352,10 +323,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnControls(InputAction.CallbackContext context);
-        void OnRollBackstep(InputAction.CallbackContext context);
+        void OnRollandBackstepandJump(InputAction.CallbackContext context);
         void OnHealing(InputAction.CallbackContext context);
     }
 }
