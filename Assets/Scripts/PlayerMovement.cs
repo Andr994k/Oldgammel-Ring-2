@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -12,12 +13,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 7.5f;
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float rollSpeed = 7.5f;
+    [SerializeField] private float backstepSpeed = 5f;
     [SerializeField] private bool isGrounded;
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] private InputAction move;
     [SerializeField] private InputAction jump;
     [SerializeField] private InputAction sprint;
     [SerializeField] Vector3 moveDirection = Vector3.zero;
+
 
     [Header("Gravity")]
     [SerializeField] private float jumpHeight = 5f;
@@ -33,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Object references")]
     [SerializeField] Transform Camera;
     [SerializeField] private CharacterController controller;
+    [SerializeField] public Image StaminaBar;
 
 
     private void Awake()
@@ -102,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
         //if (Jumping > 0 && isGrounded)
-        if (Input.GetButtonDown("Jump") && Sprinting > 0 && isGrounded)
+        if (Input.GetButtonDown("Jump") && Sprinting > 0 && isGrounded && StaminaBar.fillAmount > 0.1f)
         {
             gravityDirection.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
         }
@@ -114,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovementSpeedChange(float S)
     {
-        if (S > 0)
+        if (S > 0 && StaminaBar.fillAmount > 0)
         {
             moveSpeed = runSpeed;
         }
