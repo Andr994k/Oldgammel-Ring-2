@@ -36,7 +36,7 @@ public class PlayerMechanics : MonoBehaviour
     [Header("Inputs")]
     [SerializeField] private CharacterController controller;
     [SerializeField] private PlayerControls playerControls;
-    [SerializeField] private InputAction jump;
+    [SerializeField] private InputAction roll;
     [SerializeField] private InputAction sprint;
     [SerializeField] private InputAction tab;
     [SerializeField] private InputAction E;
@@ -44,7 +44,7 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] PlayerMovement playerMovement;
 
     [SerializeField] private bool E_pressed;
-    [SerializeField] private bool F_pressed;
+    [SerializeField] private bool Space_pressed;
 
 
     private void Awake()
@@ -56,8 +56,8 @@ public class PlayerMechanics : MonoBehaviour
 
     private void OnEnable()
     {
-        jump = playerControls.Player.Jump;
-        jump.Enable();
+        roll = playerControls.Player.RollandBackstepandJump;
+        roll.Enable();
 
         sprint = playerControls.Player.Sprint;
         sprint.Enable();
@@ -69,13 +69,13 @@ public class PlayerMechanics : MonoBehaviour
         E.Enable();
 
         playerControls.Player.Healing.started += i => E_pressed = true;
-        playerControls.Player.Jump.started += i => F_pressed = true;
+        playerControls.Player.RollandBackstepandJump.started += i => Space_pressed = true;
     }
 
     private void Start()
     {
         currentHealth = maxHealth; currentMana = maxMana; currentStamina = maxStamina;
-        StaminaBar.fillAmount = maxStamina;
+        StaminaBar.fillAmount = maxStamina/100;
         flaskOfCrimsonTears = 3;
         flaskOfCrimsonTearsAmount.text = $"{flaskOfCrimsonTears}";
     }
@@ -86,7 +86,6 @@ public class PlayerMechanics : MonoBehaviour
 
         bool isGrounded = Grounded();
 
-        float Jumping = jump.ReadValue<float>();
         float Sprinting = sprint.ReadValue<float>();
         float showControls = tab.ReadValue<float>();
 
@@ -95,20 +94,27 @@ public class PlayerMechanics : MonoBehaviour
         {
             StaminaBar.fillAmount -= StaminaRunCost * Time.deltaTime;
             currentStamina -= StaminaRunCost * 100 * Time.deltaTime;
-            if (F_pressed)
+            if (Space_pressed && StaminaBar.fillAmount > 0.1f)
             {
-                F_pressed = false;
+                Space_pressed = false;
                 StaminaBar.fillAmount -= StaminaJumpCost/100;
                 currentStamina -= StaminaJumpCost;
             }
-            F_pressed = false;
+            //Space_pressed = false;
         }
-        else if (isGrounded)
+        else if (isGrounded && !Space_pressed)
         {
             StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
             currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;
         }
-        F_pressed = false;
+        
+        if (isGrounded && invincible)
+        {
+            Space_pressed = false;
+            StaminaBar.fillAmount -= StaminaRollCost / 100;
+            currentStamina -= StaminaRollCost;
+        }
+        Space_pressed = false;
 
         if (StaminaBar.fillAmount < 0 | currentStamina < 0)
         {

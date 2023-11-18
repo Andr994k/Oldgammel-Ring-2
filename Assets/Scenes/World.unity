@@ -5300,9 +5300,37 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2225907734823547161}
     - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: rollTime
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: runSpeed
+      value: 7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: rollSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: walkSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: StaminaBar
       value: 
       objectReference: {fileID: 1644961800}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: space.m_Id
+      value: d5be0066-bf70-4cd8-8cf7-28aecd2af7cc
+      objectReference: {fileID: 0}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: space.m_Name
+      value: Space
+      objectReference: {fileID: 0}
+    - target: {fileID: 5645493800030373655, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: backstepSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6571550606423765209, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: m_Name
       value: Player
@@ -5352,13 +5380,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 830297612}
     - target: {fileID: 7961294381307547290, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: roll.m_Id
+      value: a0d9cbb0-18f9-4539-803b-c40dd7a74be8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7961294381307547290, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: StaminaBar
       value: 
       objectReference: {fileID: 1644961800}
     - target: {fileID: 7961294381307547290, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: roll.m_Name
+      value: Roll
+      objectReference: {fileID: 0}
+    - target: {fileID: 7961294381307547290, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: controlsScreen
       value: 
       objectReference: {fileID: 968909047}
+    - target: {fileID: 7961294381307547290, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
+      propertyPath: StaminaRollCost
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 7961294381307547290, guid: 88e9c8a1a2443bf48be0a0fff47e9633, type: 3}
       propertyPath: flaskOfCrimsonTearsAmount
       value: 
@@ -20680,11 +20720,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 819948148302021770, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 1.8446448e-30
       objectReference: {fileID: 0}
     - target: {fileID: 819948148302021770, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -1.2152318e-31
       objectReference: {fileID: 0}
     - target: {fileID: 1756247122351730965, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_FollowOffset.y
@@ -20704,19 +20744,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2225907735872797352, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98874915
+      value: 0.9887491
       objectReference: {fileID: 0}
     - target: {fileID: 2225907735872797352, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.14958341
+      value: 0.14958343
       objectReference: {fileID: 0}
     - target: {fileID: 2225907735872797352, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000014733512
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2225907735872797352, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000022289668
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3577782757098326943, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_Name
@@ -20824,7 +20864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6777281081246378749, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.14958338
+      value: 0.14958341
       objectReference: {fileID: 0}
     - target: {fileID: 6777281081246378749, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.y
@@ -20900,11 +20940,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9132826124627119587, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000001906995
+      value: 0.000000019033127
       objectReference: {fileID: 0}
     - target: {fileID: 9132826124627119587, guid: b4d574da7a039464791242d47e9e197c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000025320428
+      value: -0.0000000025271534
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
