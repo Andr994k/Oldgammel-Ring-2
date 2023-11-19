@@ -10,6 +10,7 @@ public class AI_Health : MonoBehaviour
 
     private void Update()
     {
+        transform.rotation = Quaternion.identity;
         LookAtTarget();
     }
 

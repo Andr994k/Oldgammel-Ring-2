@@ -212,6 +212,9 @@ public class AI : MonoBehaviour
 
         stateIndicator.text = "Attack!";
         LookAtPlayer();
+        Vector3 velocity = Vector3.zero;
+        controller.Move(velocity);
+
 
         if ((transform.position - player_pos.position).magnitude > attackRange + 1f)
         {

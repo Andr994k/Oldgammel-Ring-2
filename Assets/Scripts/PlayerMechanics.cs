@@ -103,7 +103,7 @@ public class PlayerMechanics : MonoBehaviour
         }
 
         // Jump stamina reduction
-        else if (F_pressed && StaminaBar.fillAmount > 0f)
+        if (F_pressed && StaminaBar.fillAmount > 0f && isGrounded)
         {
             F_pressed = false;
             StaminaBar.fillAmount -= StaminaJumpCost / 100;
@@ -111,7 +111,7 @@ public class PlayerMechanics : MonoBehaviour
         }
 
         // Roll stamina reduction
-        else if (isGrounded && invincible && Space_pressed && StaminaBar.fillAmount > 0.05f)
+        if (isGrounded && invincible && Space_pressed && StaminaBar.fillAmount > 0.05f)
         {
             Space_pressed = false;
             StaminaBar.fillAmount -= StaminaRollCost / 100;
@@ -119,7 +119,7 @@ public class PlayerMechanics : MonoBehaviour
         }
 
         // Stamina recharge
-        else if (isGrounded && !F_pressed && Sprinting == 0)
+        if (isGrounded && !F_pressed && Sprinting == 0)
         {
             StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
             currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;

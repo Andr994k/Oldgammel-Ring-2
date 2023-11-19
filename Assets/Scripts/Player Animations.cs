@@ -11,6 +11,7 @@ public class PlayerAnimations : MonoBehaviour
     private float stamina;
     private bool grounded;
     private bool F_pressed;
+    private bool isAttacking = false;
     public Animator animator;
 
     private void Awake()
@@ -28,6 +29,7 @@ public class PlayerAnimations : MonoBehaviour
         grounded = playerMovement.isGrounded;
         F_pressed = playerMovement.F_pressed;
 
+
         if (direction.magnitude >= 0.1f && sprinting == 0f && grounded) 
         {
             animator.SetFloat("Idle", 0f, 0.1f, Time.deltaTime);
@@ -36,28 +38,29 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetFloat("Attack", 0f, 0.1f, Time.deltaTime);
         }
 
-        else if (direction.magnitude >= 0.1f && sprinting == 1f && stamina > 0f && grounded)
+        if (direction.magnitude >= 0.1f && sprinting == 1f && stamina > 0f && grounded)
         {
             animator.SetFloat("Idle", 0f, 0.1f, Time.deltaTime);
             animator.SetFloat("Move", 1f, 0.1f, Time.deltaTime);
             animator.SetFloat("Jump", 0f, 0.1f, Time.deltaTime);
             animator.SetFloat("Attack", 0f, 0.1f, Time.deltaTime);
         }
-        else if (F_pressed && !grounded)
+        if (!grounded)
         {
             animator.SetFloat("Idle", 0f, 0.1f, Time.deltaTime);
             animator.SetFloat("Move", 0f, 0.1f, Time.deltaTime);
             animator.SetFloat("Jump", 1f, 0.1f, Time.deltaTime);
             animator.SetFloat("Attack", 0f, 0.1f, Time.deltaTime);
         }
-        else if (Input.GetMouseButton(0) == true && grounded)
+        if (Input.GetMouseButton(0) && grounded)
         {
-            animator.SetFloat("Idle", 0f, 0.1f, Time.deltaTime);
-            animator.SetFloat("Move", 0f, 0.1f, Time.deltaTime);
-            animator.SetFloat("Jump", 0f, 0.1f, Time.deltaTime);
-            animator.SetFloat("Attack", 1f, 0.1f, Time.deltaTime);
+            isAttacking = true;
+            animator.SetFloat("Idle", 0f);
+            animator.SetFloat("Move", 0f);
+            animator.SetFloat("Jump", 0f);
+            animator.SetFloat("Attack", 1f);
         }
-        else if (direction.magnitude == 0f)
+        if (direction.magnitude == 0f)
         {
             animator.SetFloat("Idle", 1f, 0.1f, Time.deltaTime);
             animator.SetFloat("Move", 0f, 0.1f, Time.deltaTime);
@@ -65,6 +68,5 @@ public class PlayerAnimations : MonoBehaviour
             animator.SetFloat("Attack", 0f, 0.1f, Time.deltaTime);
         }
     }
-
 
 }
