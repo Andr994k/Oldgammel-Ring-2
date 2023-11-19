@@ -206,6 +206,6 @@ public class PlayerMovement : MonoBehaviour
     {
         return Physics.Raycast(
             transform.position + controller.center, Vector3.down,
-            controller.bounds.extents.y + controller.skinWidth + 0.05f);
+            controller.bounds.extents.y + controller.skinWidth + 0.1f);
     }
 }
