@@ -4,6 +4,7 @@ using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class AI : MonoBehaviour
 {
@@ -23,7 +24,17 @@ public class AI : MonoBehaviour
     [SerializeField] private float moveSpeed = 3;
     [SerializeField] private float ChaseDistance;
 
+
+    [Header("Stuff")]
     private CharacterController controller;
+    [SerializeField] private PlayerMechanics playerMechanics;
+    [SerializeField] private bool playerIsAttacking;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float currentHealth;
+    [SerializeField] private Image HealthBar;
+    [SerializeField] private TextMeshProUGUI runes;
+    [SerializeField] private float runesAmount;
+
 
     private int indexOfTarget;
     private Vector3 targetPosition;
@@ -81,6 +92,9 @@ public class AI : MonoBehaviour
         indexOfTarget = -1;
         NextTarget();
         LookAtTarget();
+        HealthBar.fillAmount = 1;
+        currentHealth = maxHealth;
+        runesAmount = 0;
     }
 
 
@@ -88,6 +102,7 @@ public class AI : MonoBehaviour
     void Update()
     {
         Direction = playerMovement.Direction;
+        playerIsAttacking = Input.GetMouseButton(0);
         switch (state)
         {
             case State.Patrol:
@@ -111,6 +126,13 @@ public class AI : MonoBehaviour
         {
             playerIsMoving = false;
         }
+
+        if (currentHealth <= 0f | HealthBar.fillAmount <= 0f)
+        {
+            runesAmount += 1f;
+            runes.text = $"{runesAmount}";
+            Destroy(gameObject);
+        }
     }
 
     void NextTarget()
@@ -121,11 +143,11 @@ public class AI : MonoBehaviour
     }
     void LookAtPlayer()
     {
-        Vector3 lookAtP = player_pos.position;
-        lookAtP.y = transform.position.y;
+        Vector3 lookAtPlayer = player_pos.position;
+        lookAtPlayer.y = transform.position.y;
 
-        Vector3 PlookDir = (lookAtP - transform.position).normalized;
-        transform.forward = PlookDir;
+        Vector3 lookToPlayerDirection = (lookAtPlayer - transform.position).normalized;
+        transform.forward = lookToPlayerDirection;
     }
     void Patrol()
     {
@@ -190,12 +212,8 @@ public class AI : MonoBehaviour
 
         stateIndicator.text = "Attack!";
         LookAtPlayer();
-        Vector3 velocity = player_pos.position - transform.position;
-        velocity.Normalize();
-        velocity *= moveSpeed * Time.deltaTime;
-        controller.Move(velocity);
 
-        if ((transform.position - player_pos.position).magnitude > attackRange)
+        if ((transform.position - player_pos.position).magnitude > attackRange + 1f)
         {
             state = State.Chase;
             LookAtTarget();
@@ -208,9 +226,13 @@ public class AI : MonoBehaviour
         {
             state = State.Patrol;
         }
-        if (CanSeePlayer())
+        if (CanSeePlayer() && (transform.position - player_pos.position).magnitude > attackRange)
         {
             state = State.Chase;
+        }
+        if(CanSeePlayer() && (transform.position - player_pos.position).magnitude < attackRange)
+        {
+            state = State.Attack;
         }
         stateIndicator.text = "Confused...";
     }
@@ -225,9 +247,10 @@ public class AI : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.transform.tag == "Player Weapon")
+        if (other.transform.tag == "Player Weapon" && playerIsAttacking)
         {
-            Destroy(gameObject);
+            currentHealth -= 0.5f;
+            HealthBar.fillAmount = currentHealth/100f;
         }
     }
 }
