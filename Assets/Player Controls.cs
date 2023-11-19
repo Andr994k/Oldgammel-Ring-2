@@ -55,7 +55,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RollandBackstepandJump"",
+                    ""name"": ""RollandBackstep"",
                     ""type"": ""Button"",
                     ""id"": ""007b3d0f-3de1-4add-9900-50b32521cc75"",
                     ""expectedControlType"": ""Button"",
@@ -67,6 +67,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Healing"",
                     ""type"": ""Button"",
                     ""id"": ""e91a9dc6-2d66-4ba9-8a31-92e0f3486a8a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""32d7fd11-0703-4714-80fb-3f5daf9f6ce4"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -158,7 +167,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RollandBackstepandJump"",
+                    ""action"": ""RollandBackstep"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -172,6 +181,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Healing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0ca82d9-1126-414f-91e2-9307e87613ba"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -183,8 +203,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Controls = m_Player.FindAction("Controls", throwIfNotFound: true);
-        m_Player_RollandBackstepandJump = m_Player.FindAction("RollandBackstepandJump", throwIfNotFound: true);
+        m_Player_RollandBackstep = m_Player.FindAction("RollandBackstep", throwIfNotFound: true);
         m_Player_Healing = m_Player.FindAction("Healing", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -249,8 +270,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Controls;
-    private readonly InputAction m_Player_RollandBackstepandJump;
+    private readonly InputAction m_Player_RollandBackstep;
     private readonly InputAction m_Player_Healing;
+    private readonly InputAction m_Player_Jump;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -258,8 +280,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Controls => m_Wrapper.m_Player_Controls;
-        public InputAction @RollandBackstepandJump => m_Wrapper.m_Player_RollandBackstepandJump;
+        public InputAction @RollandBackstep => m_Wrapper.m_Player_RollandBackstep;
         public InputAction @Healing => m_Wrapper.m_Player_Healing;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -278,12 +301,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Controls.started += instance.OnControls;
             @Controls.performed += instance.OnControls;
             @Controls.canceled += instance.OnControls;
-            @RollandBackstepandJump.started += instance.OnRollandBackstepandJump;
-            @RollandBackstepandJump.performed += instance.OnRollandBackstepandJump;
-            @RollandBackstepandJump.canceled += instance.OnRollandBackstepandJump;
+            @RollandBackstep.started += instance.OnRollandBackstep;
+            @RollandBackstep.performed += instance.OnRollandBackstep;
+            @RollandBackstep.canceled += instance.OnRollandBackstep;
             @Healing.started += instance.OnHealing;
             @Healing.performed += instance.OnHealing;
             @Healing.canceled += instance.OnHealing;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -297,12 +323,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Controls.started -= instance.OnControls;
             @Controls.performed -= instance.OnControls;
             @Controls.canceled -= instance.OnControls;
-            @RollandBackstepandJump.started -= instance.OnRollandBackstepandJump;
-            @RollandBackstepandJump.performed -= instance.OnRollandBackstepandJump;
-            @RollandBackstepandJump.canceled -= instance.OnRollandBackstepandJump;
+            @RollandBackstep.started -= instance.OnRollandBackstep;
+            @RollandBackstep.performed -= instance.OnRollandBackstep;
+            @RollandBackstep.canceled -= instance.OnRollandBackstep;
             @Healing.started -= instance.OnHealing;
             @Healing.performed -= instance.OnHealing;
             @Healing.canceled -= instance.OnHealing;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -325,7 +354,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnControls(InputAction.CallbackContext context);
-        void OnRollandBackstepandJump(InputAction.CallbackContext context);
+        void OnRollandBackstep(InputAction.CallbackContext context);
         void OnHealing(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

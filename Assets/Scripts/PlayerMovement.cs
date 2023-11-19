@@ -13,9 +13,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerControls playerControls;
     [SerializeField] private InputAction move;
     [SerializeField] private InputAction sprint;
+    [SerializeField] private InputAction jump;
     [SerializeField] private InputAction space;
     [SerializeField] private bool Shift_pressed;
     [SerializeField] private bool Space_pressed;
+    [SerializeField] private bool F_pressed;
 
     [Header("Movement")]
     [SerializeField] private float walkSpeed;
@@ -24,14 +26,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float rollSpeed;
     [SerializeField] private float rollTime;
     [SerializeField] private float backstepSpeed = 5f;
-    [SerializeField] private bool isGrounded;
-    [SerializeField] Vector3 moveDirection = Vector3.zero;
+    [SerializeField] public bool isGrounded;
+    [SerializeField] public float Sprinting;
+    [SerializeField] public Vector2 Direction;
+    [SerializeField] private Vector3 moveDirection = Vector3.zero;
     [SerializeField] public bool rollInvincibility;
 
     [Header("Gravity")]
     [SerializeField] private float jumpHeight = 5f;
     [SerializeField] private float gravity = -9.82f;
-    [SerializeField] Vector3 gravityDirection = Vector3.zero;
+    [SerializeField] private Vector3 gravityDirection = Vector3.zero;
 
     [Header("Angle")]
     [SerializeField] private float targetAngle;
@@ -40,12 +44,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float TurnSmoothVelocity;
 
     [Header("Object references")]
-    [SerializeField] Transform Camera;
+    [SerializeField] private Transform Camera;
     [SerializeField] private CharacterController controller;
     [SerializeField] public Image StaminaBar;
+    [SerializeField] private GameObject me;
 
 
-    float Sprinting;
+
 
     private void Awake()
     {
@@ -61,12 +66,15 @@ public class PlayerMovement : MonoBehaviour
         sprint = playerControls.Player.Sprint;
         sprint.Enable();
 
-        space = playerControls.Player.RollandBackstepandJump;
+        space = playerControls.Player.RollandBackstep;
         space.Enable();
 
+        jump = playerControls.Player.Jump;
+        jump.Enable();
 
         playerControls.Player.Sprint.started += i => Shift_pressed = true;
-        playerControls.Player.RollandBackstepandJump.started += i => Space_pressed = true;
+        playerControls.Player.RollandBackstep.started += i => Space_pressed = true;
+        playerControls.Player.Jump.started += i => F_pressed = true;
 
     }
 
@@ -88,12 +96,11 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         isGrounded = Grounded();
-
-
-
+        moveSpeed = walkSpeed;
+        //rollInvincibility = false;
         // Get user input
         Sprinting = sprint.ReadValue<float>();
-        Vector2 Direction = move.ReadValue<Vector2>();
+        Direction = move.ReadValue<Vector2>();
         moveDirection.x = 0f;
         moveDirection.z = 0f;
 
@@ -113,20 +120,56 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // Find the moveSpeed
-        MovementSpeedChange();
 
-        // Move
+        // Do we Sprint or walk
+        if (Sprinting == 1 && StaminaBar.fillAmount > 0 && !Space_pressed)
+        {
+            Sprint();
+        }
+
+        // Forward/back and left/right movement
         controller.Move(moveDirection * moveSpeed * Time.deltaTime);
 
-        // Jump calculation
-        if (Space_pressed && Sprinting > 0 && isGrounded && StaminaBar.fillAmount > 0.1f)
+        // Do we jump
+        if (F_pressed && isGrounded && StaminaBar.fillAmount > 0f)
         {
-            Space_pressed = false;
-            gravityDirection.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+            Jump();
         }
 
         // Apply gravity
+        Gravity();
+
+        // Up and Down Movement
+        controller.Move(gravityDirection * Time.deltaTime);
+
+        // Roll
+        if (Space_pressed && isGrounded && StaminaBar.fillAmount > 0f)
+        {
+            StartCoroutine(Roll());
+
+        }
+
+        // Reset buttons
+        Space_pressed = false;
+        F_pressed = false;
+    }
+
+
+    // Walk or run function
+    private void Sprint()
+    {
+        moveSpeed = runSpeed;
+        Shift_pressed = false;
+    }
+
+    private void Jump()
+    {
+        F_pressed = false;
+        gravityDirection.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+    }
+
+    private void Gravity()
+    {
         gravityDirection.y += gravity * Time.deltaTime;
 
         // Constrain gravity
@@ -134,22 +177,7 @@ public class PlayerMovement : MonoBehaviour
         {
             gravityDirection.y = -2f;
         }
-
-        // Jump
-        controller.Move(gravityDirection * Time.deltaTime);
-
-        // Roll
-        if (Sprinting == 0 && Space_pressed && Direction.magnitude >= 0.1f && isGrounded && StaminaBar.fillAmount > 0.1f)
-        {
-            StartCoroutine(Roll());
-        }
-
-        // Reset buttons
-        rollInvincibility = false;
-        Space_pressed = false;
-        //Shift_pressed = false;
     }
-
 
     // Roll function
     IEnumerator Roll() 
@@ -158,26 +186,20 @@ public class PlayerMovement : MonoBehaviour
 
         while (Time.time < startTime + rollTime)
         {
+            if (Direction.magnitude > 0.1f)
+            {
+                controller.Move(moveDirection * rollSpeed * Time.deltaTime);
+            }
+            else
+            {
+                controller.Move(me.transform.forward * -1 * rollSpeed * Time.deltaTime);
+            }
             rollInvincibility = true;
-            controller.Move(moveDirection * rollSpeed * Time.deltaTime);
             yield return null;
         }
+        rollInvincibility = false;
     }
 
-    // Walk or run function
-    private void MovementSpeedChange()
-    {
-        if (Sprinting > 0 && StaminaBar.fillAmount > 0 && !Space_pressed)
-        {
-            moveSpeed = runSpeed;
-            Shift_pressed = false;
-        }
-        else
-        {
-            moveSpeed = walkSpeed;
-        }
-
-    }
 
     // Ground check
     private bool Grounded()

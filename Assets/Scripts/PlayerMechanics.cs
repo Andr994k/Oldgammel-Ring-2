@@ -25,7 +25,7 @@ public class PlayerMechanics : MonoBehaviour
 
     [Header("Stamina")]
     [SerializeField] private float maxStamina = 100f;
-    [SerializeField] private float currentStamina;
+    [SerializeField] public float currentStamina;
     [SerializeField] private float StaminaRunCost;
     [SerializeField] private float StaminaJumpCost;
     [SerializeField] private float StaminaRollCost;
@@ -39,12 +39,14 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] private InputAction roll;
     [SerializeField] private InputAction sprint;
     [SerializeField] private InputAction tab;
+    [SerializeField] private InputAction Jump;
     [SerializeField] private InputAction E;
     [SerializeField] private GameObject controlsScreen;
     [SerializeField] PlayerMovement playerMovement;
 
     [SerializeField] private bool E_pressed;
     [SerializeField] private bool Space_pressed;
+    [SerializeField] private bool F_pressed;
 
 
     private void Awake()
@@ -56,7 +58,7 @@ public class PlayerMechanics : MonoBehaviour
 
     private void OnEnable()
     {
-        roll = playerControls.Player.RollandBackstepandJump;
+        roll = playerControls.Player.RollandBackstep;
         roll.Enable();
 
         sprint = playerControls.Player.Sprint;
@@ -68,8 +70,12 @@ public class PlayerMechanics : MonoBehaviour
         E = playerControls.Player.Healing;
         E.Enable();
 
+        Jump = playerControls.Player.Jump;
+        Jump.Enable();
+
         playerControls.Player.Healing.started += i => E_pressed = true;
-        playerControls.Player.RollandBackstepandJump.started += i => Space_pressed = true;
+        playerControls.Player.RollandBackstep.started += i => Space_pressed = true;
+        playerControls.Player.RollandBackstep.started += i => F_pressed = true;
     }
 
     private void Start()
@@ -94,21 +100,22 @@ public class PlayerMechanics : MonoBehaviour
         {
             StaminaBar.fillAmount -= StaminaRunCost * Time.deltaTime;
             currentStamina -= StaminaRunCost * 100 * Time.deltaTime;
-            if (Space_pressed && StaminaBar.fillAmount > 0.1f)
-            {
-                Space_pressed = false;
-                StaminaBar.fillAmount -= StaminaJumpCost/100;
-                currentStamina -= StaminaJumpCost;
-            }
-            //Space_pressed = false;
+
+
         }
-        else if (isGrounded && !Space_pressed)
+        if (F_pressed && StaminaBar.fillAmount > 0.1f)
+        {
+            F_pressed = false;
+            StaminaBar.fillAmount -= StaminaJumpCost / 100;
+            currentStamina -= StaminaJumpCost;
+        }
+        if (isGrounded && !F_pressed && Sprinting == 0)
         {
             StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
             currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;
         }
         
-        if (isGrounded && invincible)
+        if (isGrounded && invincible && Sprinting == 0 && Space_pressed)
         {
             Space_pressed = false;
             StaminaBar.fillAmount -= StaminaRollCost / 100;
@@ -166,7 +173,7 @@ public class PlayerMechanics : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.transform.tag == "Weapon" && !invincible)
+        if (other.transform.tag == "Enemy Weapon" && !invincible)
         {
             currentHealth -= 0.5f * 100 * Time.deltaTime;
             HealthBar.fillAmount -= 0.5f * Time.deltaTime;

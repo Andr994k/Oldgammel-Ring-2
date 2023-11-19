@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RollandBackstepandJump",
+                    "name": "RollandBackstep",
                     "type": "Button",
                     "id": "007b3d0f-3de1-4add-9900-50b32521cc75",
                     "expectedControlType": "Button",
@@ -45,6 +45,15 @@
                     "name": "Healing",
                     "type": "Button",
                     "id": "e91a9dc6-2d66-4ba9-8a31-92e0f3486a8a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "32d7fd11-0703-4714-80fb-3f5daf9f6ce4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -136,7 +145,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RollandBackstepandJump",
+                    "action": "RollandBackstep",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -148,6 +157,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Healing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f0ca82d9-1126-414f-91e2-9307e87613ba",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
