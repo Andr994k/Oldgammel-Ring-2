@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private InputAction space;
     [SerializeField] private bool Shift_pressed;
     [SerializeField] private bool Space_pressed;
-    [SerializeField] private bool F_pressed;
+    [SerializeField] public bool F_pressed;
 
     [Header("Movement")]
     [SerializeField] private float walkSpeed;
@@ -143,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(gravityDirection * Time.deltaTime);
 
         // Roll
-        if (Space_pressed && isGrounded && StaminaBar.fillAmount > 0f)
+        if (Space_pressed && isGrounded && StaminaBar.fillAmount > 0.05f)
         {
             StartCoroutine(Roll());
 

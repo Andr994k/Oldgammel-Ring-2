@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,7 +14,9 @@ public class AI : MonoBehaviour
     [SerializeField] private float visionConeAngle;
     [SerializeField] private float hearingRange;
     [SerializeField] private float attackRange;
-    [SerializeField] private TextMeshPro stateIndicator;
+    [SerializeField] private TextMeshProUGUI stateIndicator;
+    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private Vector2 Direction; 
 
     [Header("Movement")]
     [SerializeField] private Transform[] points;
@@ -84,6 +87,7 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Direction = playerMovement.Direction;
         switch (state)
         {
             case State.Patrol:
@@ -99,7 +103,7 @@ public class AI : MonoBehaviour
                 Attack();
                 break;
         }
-        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        if (Direction.magnitude >= 0.1f)
         {
             playerIsMoving = true;
         }
@@ -217,5 +221,13 @@ public class AI : MonoBehaviour
         Chase,
         Attack,
         Confused
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.transform.tag == "Player Weapon")
+        {
+            Destroy(gameObject);
+        }
     }
 }

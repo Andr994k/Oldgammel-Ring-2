@@ -37,7 +37,7 @@ public class YouDied : MonoBehaviour
 
     public void OnFadeComplete()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
     }
 
 }

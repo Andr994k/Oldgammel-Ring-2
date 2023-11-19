@@ -75,7 +75,7 @@ public class PlayerMechanics : MonoBehaviour
 
         playerControls.Player.Healing.started += i => E_pressed = true;
         playerControls.Player.RollandBackstep.started += i => Space_pressed = true;
-        playerControls.Player.RollandBackstep.started += i => F_pressed = true;
+        playerControls.Player.Jump.started += i => F_pressed = true;
     }
 
     private void Start()
@@ -95,34 +95,39 @@ public class PlayerMechanics : MonoBehaviour
         float Sprinting = sprint.ReadValue<float>();
         float showControls = tab.ReadValue<float>();
 
-        // Stamina control
-        if (Sprinting > 0 && isGrounded) // && Jumping == 0
+        // Sprinting stamina reduction
+        if (Sprinting == 1 && isGrounded)
         {
             StaminaBar.fillAmount -= StaminaRunCost * Time.deltaTime;
             currentStamina -= StaminaRunCost * 100 * Time.deltaTime;
-
-
         }
-        if (F_pressed && StaminaBar.fillAmount > 0.1f)
+
+        // Jump stamina reduction
+        else if (F_pressed && StaminaBar.fillAmount > 0f)
         {
             F_pressed = false;
             StaminaBar.fillAmount -= StaminaJumpCost / 100;
             currentStamina -= StaminaJumpCost;
         }
-        if (isGrounded && !F_pressed && Sprinting == 0)
-        {
-            StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
-            currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;
-        }
-        
-        if (isGrounded && invincible && Sprinting == 0 && Space_pressed)
+
+        // Roll stamina reduction
+        else if (isGrounded && invincible && Space_pressed && StaminaBar.fillAmount > 0.05f)
         {
             Space_pressed = false;
             StaminaBar.fillAmount -= StaminaRollCost / 100;
             currentStamina -= StaminaRollCost;
         }
+
+        // Stamina recharge
+        else if (isGrounded && !F_pressed && Sprinting == 0)
+        {
+            StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
+            currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;
+        }
         Space_pressed = false;
 
+
+        // Constrain Stamina
         if (StaminaBar.fillAmount < 0 | currentStamina < 0)
         {
             StaminaBar.fillAmount = 0;
