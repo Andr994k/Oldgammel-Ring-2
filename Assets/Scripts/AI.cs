@@ -17,12 +17,13 @@ public class AI : MonoBehaviour
     [SerializeField] private float attackRange;
     [SerializeField] private TextMeshProUGUI stateIndicator;
     [SerializeField] private PlayerMovement playerMovement;
-    [SerializeField] private Vector2 Direction; 
+    [SerializeField] private Vector2 Direction;
 
     [Header("Movement")]
     [SerializeField] private Transform[] points;
     [SerializeField] private float moveSpeed = 3;
     [SerializeField] private float ChaseDistance;
+    [SerializeField] public bool Moving;
 
 
     [Header("Stuff")]
@@ -95,6 +96,7 @@ public class AI : MonoBehaviour
         HealthBar.fillAmount = 1;
         currentHealth = maxHealth;
         runesAmount = 0;
+        Moving = false;
     }
 
 
@@ -151,6 +153,7 @@ public class AI : MonoBehaviour
     }
     void Patrol()
     {
+        Moving = true;
         if (CanSeePlayer())
         {
             state = State.Chase;
@@ -190,6 +193,7 @@ public class AI : MonoBehaviour
         Vector3 velocity = player_pos.position - transform.position;
         velocity.Normalize();
         velocity *= moveSpeed * Time.deltaTime;
+        Moving = true;
         controller.Move(velocity);
 
         if ((transform.position - player_pos.position).magnitude > ChaseDistance)
@@ -213,6 +217,7 @@ public class AI : MonoBehaviour
         stateIndicator.text = "Attack!";
         LookAtPlayer();
         Vector3 velocity = Vector3.zero;
+        Moving = false;
         controller.Move(velocity);
 
 

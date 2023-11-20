@@ -105,19 +105,19 @@ public class PlayerMovement : MonoBehaviour
         moveDirection.z = 0f;
 
         // Movement
-        if (Direction.magnitude >= 0.1f)
+        if (Direction.magnitude > 0f)
         {
-            if (isGrounded)
-            {
+            //if (isGrounded)
+            //{
                 targetAngle = Mathf.Atan2(Direction.x, Direction.y) * Mathf.Rad2Deg + Camera.eulerAngles.y;
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref TurnSmoothVelocity, turnSmoothTime);
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            }
-            else
-            {
-                moveDirection = transform.forward;
-            }
+            //}
+            //else
+            //{
+            //    moveDirection = transform.forward;
+            //}
         }
 
 
@@ -206,6 +206,6 @@ public class PlayerMovement : MonoBehaviour
     {
         return Physics.Raycast(
             transform.position + controller.center, Vector3.down,
-            controller.bounds.extents.y + controller.skinWidth + 0.1f);
+            controller.bounds.extents.y + controller.skinWidth + 0.01f);
     }
 }

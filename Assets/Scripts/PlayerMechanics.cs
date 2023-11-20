@@ -124,6 +124,7 @@ public class PlayerMechanics : MonoBehaviour
             StaminaBar.fillAmount += StaminaRechargeRate * Time.deltaTime;
             currentStamina += StaminaRechargeRate * 100 * Time.deltaTime;
         }
+        F_pressed = false;
         Space_pressed = false;
 
 
@@ -133,7 +134,7 @@ public class PlayerMechanics : MonoBehaviour
             StaminaBar.fillAmount = 0;
             currentStamina = 0;
         }
-        if (StaminaBar.fillAmount > maxStamina | currentStamina > maxStamina)
+        if (StaminaBar.fillAmount > maxStamina/100 | currentStamina > maxStamina)
         {
             StaminaBar.fillAmount = maxStamina;
             currentStamina = maxStamina;

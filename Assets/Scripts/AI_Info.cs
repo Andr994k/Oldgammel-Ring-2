@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class AI_Health : MonoBehaviour
+public class AI_Info : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject Camera;
 
 
     private void Update()
@@ -16,7 +16,7 @@ public class AI_Health : MonoBehaviour
 
     void LookAtTarget()
     {
-        Vector3 lookAt = player.transform.position;
+        Vector3 lookAt = Camera.transform.position;
         lookAt.y = transform.position.y;
 
         Vector3 lookDir = (lookAt - transform.position).normalized;
