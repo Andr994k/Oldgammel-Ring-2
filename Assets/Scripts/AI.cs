@@ -128,13 +128,15 @@ public class AI : MonoBehaviour
         {
             playerIsMoving = false;
         }
-
         if (currentHealth <= 0f | HealthBar.fillAmount <= 0f)
         {
             runesAmount += 1f;
-            runes.text = $"{runesAmount}";
             Destroy(gameObject);
+            playerMechanics.runesAmount = runesAmount;
+
         }
+        runesAmount = playerMechanics.runesAmount;
+
     }
 
     void NextTarget()

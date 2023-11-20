@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using TMPro;
+using System.Data;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMechanics : MonoBehaviour
@@ -30,6 +31,7 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] private float StaminaJumpCost;
     [SerializeField] private float StaminaRollCost;
     [SerializeField] private float StaminaRechargeRate;
+    
 
     [SerializeField] public Image StaminaBar;
 
@@ -47,6 +49,10 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] private bool E_pressed;
     [SerializeField] private bool Space_pressed;
     [SerializeField] private bool F_pressed;
+
+    [Header("Runes")]
+    [SerializeField] public float runesAmount;
+    [SerializeField] private TextMeshProUGUI runes;
 
 
     private void Awake()
@@ -167,7 +173,10 @@ public class PlayerMechanics : MonoBehaviour
         { 
             currentHealth = maxHealth;
             HealthBar.fillAmount = maxHealth;
+
+                
         }
+        runes.text = $"{runesAmount}";
     }
 
     private bool Grounded()
