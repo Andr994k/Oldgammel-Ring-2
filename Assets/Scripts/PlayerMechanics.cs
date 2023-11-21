@@ -31,8 +31,6 @@ public class PlayerMechanics : MonoBehaviour
     [SerializeField] private float StaminaJumpCost;
     [SerializeField] private float StaminaRollCost;
     [SerializeField] private float StaminaRechargeRate;
-    
-
     [SerializeField] public Image StaminaBar;
 
     [Header("Inputs")]
@@ -94,6 +92,7 @@ public class PlayerMechanics : MonoBehaviour
 
     private void Update()
     {
+        runes.text = $"{runesAmount}";
         invincible = playerMovement.rollInvincibility;
 
         bool isGrounded = Grounded();
@@ -173,10 +172,7 @@ public class PlayerMechanics : MonoBehaviour
         { 
             currentHealth = maxHealth;
             HealthBar.fillAmount = maxHealth;
-
-                
         }
-        runes.text = $"{runesAmount}";
     }
 
     private bool Grounded()
